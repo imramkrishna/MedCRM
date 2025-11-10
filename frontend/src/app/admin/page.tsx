@@ -86,7 +86,6 @@ const AdminDashboard = () => {
         customers: '',
         orders: '',
         inventory: '',
-        sellDetails: '',
         purchases: '',
         quotation: '',
         transactions: '',
@@ -169,7 +168,6 @@ const AdminDashboard = () => {
 
     const menuItems = [
         { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-        { id: 'sell-details', label: 'Sell Details', icon: TrendingUp },
         { id: 'customers', label: 'Customer List (Distributors)', icon: Users },
         { id: 'orders', label: 'Orders', icon: ShoppingCart },
         { id: 'manual-request', label: 'Manual Request', icon: FileText },
@@ -741,8 +739,8 @@ const AdminDashboard = () => {
         switch (activeSection) {
             case 'dashboard':
                 return renderDashboard();
-            case 'sell-details':
-                return <SellDetails />;
+            // case 'sell-details':
+            //     return <SellDetails />;
             case 'customers':
                 return <Customers />;
             case 'orders':
