@@ -7,9 +7,7 @@ import updateOrderController from "../../controllers/distributor/updateOrder";
 import paymentRequestController from "../../controllers/admin/payments/paymentRequestController";
 import cancelOrderController from "../../controllers/distributor/cancelOrder";
 const distributorRouter = express.Router();
-
 distributorRouter.use(checkAccessTokenMiddleware);
-
 distributorRouter.get("/dashboard", distributorDashboardController);
 distributorRouter.get("/get-orders",getOrdersController)
 distributorRouter.post("/place-order", placeOrderController);

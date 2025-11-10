@@ -63,6 +63,9 @@ const placeOrderController = async (req: Request, res: Response): Promise<Respon
                 discountAmount: totalDiscountAmount,
                 totalAmount,
                 notes,
+                paymentMode: PaymentMode,
+                transactionId: TxnId,
+                confirmationSlip: ConfirmationSlip,
                 requestedDeliveryDate: requestedDeliveryDate ? new Date(requestedDeliveryDate) : null,
                 orderItems: {
                     create: items.map((item: any) => {
@@ -94,12 +97,6 @@ const placeOrderController = async (req: Request, res: Response): Promise<Respon
                         email: true
                     }
                 }
-            }
-        });
-        await prisma.paymentStatusRequest.create({
-            data: {
-                orderId: order.id,
-                PaymentMode: "CASH_ON_DELIVERY"
             }
         });
         // Log activity

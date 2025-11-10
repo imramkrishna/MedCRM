@@ -119,7 +119,7 @@ const ProductDetail = ({ product, isOpen, onClose }: ProductDetailProps) => {
                 requestedDeliveryDate: orderForm.requestedDeliveryDate || null
             };
 
-            await post("/distributor/place-order", orderData, {
+            await post("/distributor/placeorder", orderData, {
                 withCredentials: true
             });
 

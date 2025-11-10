@@ -272,6 +272,9 @@ const Products = () => {
                     lineTotal: lineTotal
                 }],
                 notes: orderForm.notes,
+                PaymentMode: paymentInfo.paymentMode,
+                TxnId: paymentInfo.txnId,
+                ConfirmationSlip: paymentInfo.confirmationSlip,
                 requestedDeliveryDate: orderForm.requestedDeliveryDate || null
             };
 
@@ -285,12 +288,14 @@ const Products = () => {
             
             if (!orderId) {
                 throw new Error("Order ID not found in response");
-            }
+            }       
 
             // Then, create the payment request
             const paymentData: any = {
                 orderId: orderId,
-                PaymentMode: paymentInfo.paymentMode
+                PaymentMode: paymentInfo.paymentMode,
+                TxnId: paymentInfo.txnId,
+                ConfirmationSlip: paymentInfo.confirmationSlip
             };
 
             // Add TxnId and ConfirmationSlip if not CASH_ON_DELIVERY

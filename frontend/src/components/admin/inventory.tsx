@@ -1251,7 +1251,7 @@ const Inventory = () => {
     const startIndex = (currentPage - 1) * itemsPerPage;
     const paginatedProducts = filteredProducts.slice(startIndex, startIndex + itemsPerPage);
 
-    const lowStockProducts = products.filter(p => p.stockQuantity - p.reservedQuantity < 10);
+    const lowStockProducts = products.filter(p => p.stockQuantity <= 20);
     const activeProducts = products.filter(p => p.isActive);
     const discontinuedProducts = products.filter(p => p.isDiscontinued);
 
@@ -1358,8 +1358,8 @@ const Inventory = () => {
                             </thead>
                             <tbody className="bg-white divide-y divide-gray-200">
                                 {paginatedProducts.map((product) => {
-                                    const availableStock = product.stockQuantity - product.reservedQuantity;
-                                    const isLowStock = availableStock < 10;
+                                    const availableStock = product.stockQuantity;;
+                                    const isLowStock = availableStock <= 20;
                                     
                                     return (
                                         <tr key={product.id} className="hover:bg-gray-50">
@@ -1388,10 +1388,10 @@ const Inventory = () => {
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 <div className="text-sm text-gray-900">
-                                                    Available: {availableStock}
+                                                    Available: {product.stockQuantity}
                                                 </div>
                                                 <div className="text-sm text-gray-500">
-                                                    Total: {product.stockQuantity} | Reserved: {product.reservedQuantity}
+                                                    Total: {product.stockQuantity} | Reserved: {product.reservedQuantity || 0}
                                                 </div>
                                                 {isLowStock && (
                                                     <div className="flex items-center mt-1">

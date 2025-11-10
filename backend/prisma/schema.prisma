@@ -28,7 +28,7 @@ model distributor {
   updatedAt                DateTime                   @updatedAt
   distributorLoginSessions distributorLoginSessions[]
   orders                   Order[]
-  activityLogs             activityLog[]              // Added relation field
+  activityLogs             activityLog[] // Added relation field
 }
 
 model distributorLoginSessions {
@@ -64,19 +64,21 @@ model pendingRegistration {
 
 // Enhanced Order Management
 model Order {
-  id            String      @id @default(cuid())
-  orderNumber   String      @unique @default(uuid()) // Human-readable order number
-  distributorId Int?
+  id               String       @id @default(cuid())
+  orderNumber      String       @unique @default(uuid()) // Human-readable order number
+  distributorId    Int?
   //for sample orders and checking functionality
-  paymentStatus String  @default("unpaid")
-  specialOrder Boolean @default(false)
-  status        OrderStatus @default(PENDING)
-
+  paymentStatus    String       @default("unpaid")
+  specialOrder     Boolean      @default(false)
+  status           OrderStatus  @default(PENDING)
+  paymentMode      PaymentMode? @default(CASH_ON_DELIVERY)
+  transactionId    String?      @unique
+  confirmationSlip String? // Optional field for confirmation slip URL or reference
   // Financial calculations with Decimal for precision
-  subTotal       Decimal @db.Decimal(10, 2)
-  taxAmount      Decimal @default(0) @db.Decimal(10, 2)
-  discountAmount Decimal @default(0) @db.Decimal(10, 2)
-  totalAmount    Decimal @db.Decimal(10, 2)
+  subTotal         Decimal      @db.Decimal(10, 2)
+  taxAmount        Decimal      @default(0) @db.Decimal(10, 2)
+  discountAmount   Decimal      @default(0) @db.Decimal(10, 2)
+  totalAmount      Decimal      @db.Decimal(10, 2)
 
   // Order metadata
   notes                 String?
@@ -93,27 +95,29 @@ model Order {
   updatedAt DateTime @updatedAt
 
   // Relations
-  distributor  distributor?    @relation(fields: [distributorId], references: [id])
-  orderItems   OrderItem[]
-  orderHistory OrderHistory[]
+  distributor          distributor?           @relation(fields: [distributorId], references: [id])
+  orderItems           OrderItem[]
+  orderHistory         OrderHistory[]
   paymentStatusRequest paymentStatusRequest[]
+
   @@index([distributorId, status])
   @@index([orderNumber])
   @@index([createdAt])
   @@index([status])
   @@map("orders")
 }
+
 model paymentStatusRequest {
-  id          Int      @id @default(autoincrement())
-  orderId     String   @unique
-  PaymentMode String
-  TxnId       String?   @unique
-  ConfirmationSlip String?  // Optional field for confirmation slip URL or reference
-  requestedAt DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id               Int       @id @default(autoincrement())
+  orderId          String    @unique
+  PaymentMode      String
+  TxnId            String?   @unique
+  ConfirmationSlip String? // Optional field for confirmation slip URL or reference
+  requestedAt      DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
   paymentRequestAt DateTime? @default(now())
   paymentUpdatedAt DateTime? @updatedAt
-  order       Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  order            Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
 
   @@index([orderId])
   @@map("payment_status_requests")
@@ -223,31 +227,35 @@ model product {
   @@index([brand])
   @@map("products")
 }
+
 model activityLog {
-  id          Int      @id @default(autoincrement())
+  id            Int          @id @default(autoincrement())
   distributorId Int?
-  action      String
-  timestamp   DateTime @default(now())
-  details     Json?
-  distributor distributor? @relation(fields: [distributorId], references: [id])
+  action        String
+  timestamp     DateTime     @default(now())
+  details       Json?
+  distributor   distributor? @relation(fields: [distributorId], references: [id])
+
   @@index([distributorId])
   @@map("activity_logs")
 }
+
 // Enhanced enum with more granular statuses
 enum OrderStatus {
-  DRAFT              // Keep temporarily
+  DRAFT // Keep temporarily
   PENDING
   CONFIRMED
-  APPROVED           // Keep temporarily
-  REJECTED           // Keep temporarily
+  APPROVED // Keep temporarily
+  REJECTED // Keep temporarily
   PROCESSING
-  READY_TO_SHIP      // Keep temporarily
+  READY_TO_SHIP // Keep temporarily
   SHIPPED
   DELIVERED
   CANCELLED
-  RETURNED           // Keep temporarily
+  RETURNED // Keep temporarily
   PARTIALLY_FULFILLED // Keep temporarily
 }
+
 enum PaymentMode {
   CHEQUE_ON_DELIVERY
   CASH_ON_DELIVERY

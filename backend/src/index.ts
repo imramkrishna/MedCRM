@@ -7,7 +7,9 @@ import cookieParser from "cookie-parser";
 import adminRouter from "./routes/profile/adminRoutes";
 import distributorRouter from "./routes/profile/distributorRoutes";
 import productsRouter from "./routes/products/productsRoutes";
-
+import { Request,Response } from "express";
+import prisma from "./utils/prismaClient";
+import encryptPassword from "./utils/encryptPassword";
 // Load environment variables from .env file
 dotenv.config();
 
@@ -61,6 +63,17 @@ app.use("/profile", profileRouter);
 app.use("/admin", adminRouter);
 app.use("/distributor", distributorRouter);
 app.use("/products", productsRouter);
+app.post("/create-admin",async (req:Request,res:Response)=>{
+    let {email,password}=req.body;
+    let hashedPassword=await encryptPassword(password);
+    await prisma.admin.create({
+        data: {
+            email,
+            password:hashedPassword,
+        }
+    });
+    res.status(201).json({ message: "Admin created successfully" });
+});
 
 // Error handling middleware
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {

@@ -17,7 +17,7 @@ export async function generateAccessToken(refreshToken: string): Promise<string>
         if (!userExists) {
             throw new Error("User does not exist");
         }
-        const accessToken = jwt.sign({ email: userExists.email, id: userExists.id }, JWT_SECRET, { expiresIn: '10s' });
+        const accessToken = jwt.sign({ email: userExists.email, id: userExists.id }, JWT_SECRET, { expiresIn: '15m' });
         if (!accessToken) {
             throw new Error("Failed to generate access token");
         }
@@ -28,7 +28,7 @@ export async function generateAccessToken(refreshToken: string): Promise<string>
         if (!userExists) {
             throw new Error("User does not exist");
         }
-        const accessToken = jwt.sign({ email: userExists.email, id: userExists.id }, JWT_SECRET, { expiresIn: '40s' });
+        const accessToken = jwt.sign({ email: userExists.email, id: userExists.id }, JWT_SECRET, { expiresIn: '15m' });
         if (!accessToken) {
             throw new Error("Failed to generate access token");
         }

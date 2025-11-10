@@ -37,19 +37,15 @@ export const apiRequest = async (config: any) => {
     } catch (error: any) {
         if (error.response?.status === 401 && !config._retry) {
             config._retry = true;
-
             try {
                 await refreshToken();
                 return await makeRequest();
             } catch (refreshError) {
+                // If refresh fails, clear auth and redirect
                 if (typeof window !== 'undefined') {
-                    // Redirect to appropriate login page based on current path
-                    const currentPath = window.location.pathname;
-                    if (currentPath.startsWith('/admin')) {
-                        window.location.href = '/auth/admin-login';
-                    } else {
-                        window.location.href = '/auth/distributor-login';
-                    }
+                    localStorage.removeItem('auth_user');
+                    localStorage.removeItem('auth_isAuthenticated');
+                    window.location.href = '/auth/distributor-login';
                 }
                 throw refreshError;
             }
