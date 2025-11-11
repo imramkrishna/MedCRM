@@ -5,8 +5,6 @@ import {
     Plus,
     Eye,
     Edit,
-    Trash2,
-    Clock,
     UserPlus,
     UserCheck,
     MapPin,
@@ -15,8 +13,6 @@ import {
     X,
     Building,
     User,
-    LockIcon,
-    FileText
 } from 'lucide-react';
 import { get, post, put } from "@/lib/api";
 import EditButton from "../ui/buttons/EditButton";

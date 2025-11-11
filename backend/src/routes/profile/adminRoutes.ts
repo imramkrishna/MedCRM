@@ -13,6 +13,7 @@ import deleteProductController from "../../controllers/admin/deleteProductContro
 import manualOrderRequestController from "../../controllers/admin/manualOrderRequest";
 import paymentRequestController from "../../controllers/admin/payments/paymentStatusController";
 import paymentStatusController from "../../controllers/admin/payments/paymentStatusController";
+import recentActivityController from "../../controllers/admin/recent-activity/recentActivity.controller";
 const adminRouter = express.Router();
 adminRouter.use(checkAccessTokenMiddleware);
 // Admin dashboard route
@@ -28,5 +29,6 @@ adminRouter.delete("/deleteProduct/:id", checkAdminMiddleware,deleteProductContr
 adminRouter.post("/manual-order-request", manualOrderRequestController);
 adminRouter.post("/payment-requests", paymentRequestController);
 adminRouter.post("/update-payment-status", paymentStatusController);
+adminRouter.get("/recent-activity",recentActivityController)
 
 export default adminRouter;

@@ -5,7 +5,6 @@ import {
     CheckCircle,
     XCircle,
     ShoppingCart,
-    Filter,
     X,
     Plus,
     Minus,
