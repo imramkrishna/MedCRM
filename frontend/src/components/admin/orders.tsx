@@ -48,6 +48,27 @@ interface OrderItem {
     createdAt: string;
     updatedAt: string;
     order: {
+        id: string;
+        orderNumber: string;
+        distributorId: number;
+        paymentStatus: string;
+        specialOrder: boolean;
+        status: string;
+        paymentMode: string;
+        transactionId: string | null;
+        confirmationSlip: string | null;
+        subTotal: string;
+        taxAmount: string;
+        discountAmount: string;
+        totalAmount: string;
+        notes: string;
+        internalNotes: string | null;
+        requestedDeliveryDate: string | null;
+        approvedAt: string | null;
+        rejectedAt: string | null;
+        rejectionReason: string | null;
+        createdAt: string;
+        updatedAt: string;
         distributor: {
             id: number;
             ownerName: string;
@@ -65,7 +86,7 @@ interface OrderItem {
             updatedAt: string;
             paymentRequestAt?: string;
             paymentUpdatedAt?: string;
-        };
+        }[];
     }
 }
 
@@ -197,27 +218,29 @@ const Orders = () => {
             const productSummary = items.slice(0, 2).map(item => item.productName).join(', ') +
                 (items.length > 2 ? ` +${items.length - 2} more` : '');
             const isFulfilled = items.every(item => item.quantityFulfilled === item.quantity);
-            const status = isFulfilled ? 'DELIVERED' : 'PENDING';
+            // Use the actual order status from the database instead of calculating it
+            const status = items[0].order.status;
             const distributor = items[0].order.distributor; // Get distributor from first item
-            const paymentStatusRequest = items[0].order.paymentStatusRequest; // Get payment status from first item
+            const paymentStatusRequests = items[0].order.paymentStatusRequest; // Get payment status from first item
 
-            // Determine payment status
+            // Determine payment status (use the first request if multiple exist)
             let paymentStatus: PaymentStatus;
-            if (paymentStatusRequest) {
+            if (paymentStatusRequests && paymentStatusRequests.length > 0) {
+                const latestRequest = paymentStatusRequests[0];
                 paymentStatus = {
-                    mode: paymentStatusRequest.PaymentMode,
-                    status: paymentStatusRequest.TxnId ? 'Paid' : 'Pending',
-                    txnId: paymentStatusRequest.TxnId,
-                    confirmationSlip: paymentStatusRequest.ConfirmationSlip,
-                    requestedAt: paymentStatusRequest.requestedAt,
-                    updatedAt: paymentStatusRequest.updatedAt
+                    mode: latestRequest.PaymentMode,
+                    status: latestRequest.TxnId ? 'Paid' : 'Pending',
+                    txnId: latestRequest.TxnId,
+                    confirmationSlip: latestRequest.ConfirmationSlip,
+                    requestedAt: latestRequest.requestedAt,
+                    updatedAt: latestRequest.updatedAt
                 };
             } else {
                 paymentStatus = {
-                    mode: 'CASH_ON_DELIVERY',
-                    status: 'Pending',
-                    txnId: null,
-                    confirmationSlip: null,
+                    mode: items[0].order.paymentMode || 'CASH_ON_DELIVERY',
+                    status: items[0].order.paymentStatus || 'Pending',
+                    txnId: items[0].order.transactionId,
+                    confirmationSlip: items[0].order.confirmationSlip,
                     requestedAt: items[0].createdAt,
                     updatedAt: items[0].createdAt
                 };
@@ -320,7 +343,7 @@ const Orders = () => {
             setIsUpdatingOrder(true);
             // Update each order item
             for (const item of selectedOrder.items) {
-                await put(`/admin/orders/${item.id}`, {
+                await put(`/admin/updateOrder/${item.order}`, {
                     status: editFormData.status,
                     notes: editFormData.notes,
                     requestedDeliveryDate: editFormData.requestedDeliveryDate || null
@@ -335,7 +358,6 @@ const Orders = () => {
             setSelectedOrder(null);
         } catch (error) {
             console.error('Error updating order:', error);
-            alert('Failed to update order. Please try again.');
         } finally {
             setIsUpdatingOrder(false);
         }

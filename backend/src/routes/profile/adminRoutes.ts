@@ -14,6 +14,7 @@ import manualOrderRequestController from "../../controllers/admin/manualOrderReq
 import paymentRequestController from "../../controllers/admin/payments/paymentStatusController";
 import paymentStatusController from "../../controllers/admin/payments/paymentStatusController";
 import recentActivityController from "../../controllers/admin/recent-activity/recentActivity.controller";
+import updateOrderController from "../../controllers/admin/updateOrderController";
 const adminRouter = express.Router();
 adminRouter.use(checkAccessTokenMiddleware);
 // Admin dashboard route
@@ -21,6 +22,7 @@ adminRouter.get("/dashboard", dashboardController);
 adminRouter.get("/distributors", distributorController);
 adminRouter.post("/addOrder", addOrderController);
 adminRouter.get("/getOrders", getOrdersController);
+adminRouter.put("/updateOrder/:id", updateOrderController)
 adminRouter.post("/addProduct", addProductController);
 adminRouter.get("/getProducts", getProductsController);
 adminRouter.put("/updateProduct/:id", checkAdminMiddleware, updateProductsController);
