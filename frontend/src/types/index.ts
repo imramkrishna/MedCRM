@@ -51,3 +51,16 @@ export interface DistributorApplication {
     createdAt?: string;
     updatedAt?: string;
 }
+export interface ActivityLogType {
+    id: number;
+    distributorId?: number;
+    action: string;
+    timestamp: string;
+    details?: any;
+    distributor?: {
+        id: number;
+        ownerName: string;
+        companyName: string;
+        email: string;
+    };
+} 

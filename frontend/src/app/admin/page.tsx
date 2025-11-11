@@ -38,7 +38,7 @@ import {
     FileBarChart
 } from 'lucide-react';
 import { DistributorApplication } from '@/types';
-import SellDetails from '@/components/admin/sellDetails';
+import { ActivityLogType } from '@/types';
 import Customers from '@/components/admin/customers';
 import Orders from '@/components/admin/orders';
 import ManualRequest from '@/components/admin/manual-request';
@@ -96,7 +96,6 @@ const AdminDashboard = () => {
             // Fetch data based on the active section and search queries
             //adding withCredentials true for cross origin request
             const response = await get('/admin/dashboard');
-            console.log(response.data);
             // Handle the fetched data
         } catch (error) {
             console.error("Error fetching data:", error);
@@ -105,6 +104,15 @@ const AdminDashboard = () => {
             setLoading(false);
         }
     };
+    const fetchActivityLog=async()=>{
+        try{
+            const response=await get('/admin/recent-activity',{});
+            const recent=response.data.activityLog;
+            setRecentActivity(recent);
+        } catch (error) {
+            console.error("Error fetching activity log:", error);
+        }
+    }
 
     useEffect(() => {
         // Only check authentication after auth state is initialized
@@ -116,6 +124,7 @@ const AdminDashboard = () => {
         // Only fetch data if authenticated as admin
         if (isAuthenticated && user?.role === 'admin') {
             fetchData();
+            fetchActivityLog();
         }
     }, [isAuthenticated, isInitialized, user, router]);
 
@@ -219,26 +228,7 @@ const AdminDashboard = () => {
         }
     ];
 
-    const recentActivity = [
-        {
-            user: 'Abram Workman',
-            action: 'completed admin task 1 of 5',
-            time: '2h ago',
-            avatar: 'AW'
-        },
-        {
-            user: 'David Alan Martin',
-            action: 'updated Low Stock item',
-            time: '4h ago',
-            avatar: 'DM'
-        },
-        {
-            user: 'Ann Grubner',
-            action: 'added New Product Business',
-            time: '6h ago',
-            avatar: 'AG'
-        }
-    ];
+    const [recentActivity,setRecentActivity] = useState<ActivityLogType[]>([]);
 
     const upcomingRestock = [
         { product: 'Waterproof Arctic Boots', days: '30 days', status: 'pending' },
@@ -398,70 +388,52 @@ const AdminDashboard = () => {
                     </div>
                     <div className="p-6">
                         <div className="space-y-5">
-                            <div className="flex items-start gap-4 p-3 rounded-xl hover:bg-blue-50/40 transition-colors">
-                                <div className="flex-shrink-0">
-                                    <div className="p-3 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl shadow-sm">
-                                        <ShoppingCart className="h-5 w-5 text-white" />
-                                    </div>
+                            {recentActivity.length > 0 ? (
+                                recentActivity.slice(0, 5).map((activity, index) => {
+                                    const iconMap: { [key: string]: any } = {
+                                        'ORDER': ShoppingCart,
+                                        'PAYMENT': DollarSign,
+                                        'INVENTORY': Package,
+                                        'DISTRIBUTOR': UserPlus,
+                                        'QUOTATION': CheckCircle
+                                    };
+                                    const Icon = iconMap[activity.action] || Package;
+                                    
+                                    const colorMap: { [key: string]: string } = {
+                                        'ORDER': 'from-blue-500 to-blue-600',
+                                        'PAYMENT': 'from-green-500 to-emerald-600',
+                                        'INVENTORY': 'from-purple-500 to-indigo-600',
+                                        'DISTRIBUTOR': 'from-orange-500 to-amber-600',
+                                        'QUOTATION': 'from-green-500 to-teal-600'
+                                    };
+                                    const bgColor = colorMap[activity.action] || 'from-gray-500 to-gray-600';
+                                    
+                                    return (
+                                        <div key={activity.id} className="flex items-start gap-4 p-3 rounded-xl hover:bg-blue-50/40 transition-colors">
+                                            <div className="flex-shrink-0">
+                                                <div className={`p-3 bg-gradient-to-br ${bgColor} rounded-xl shadow-sm`}>
+                                                    <Icon className="h-5 w-5 text-white" />
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <h4 className="font-medium text-gray-900">{activity.action}</h4>
+                                                <p className="text-gray-600">
+                                                    {activity.details?.description || 'Activity performed'}
+                                                </p>
+                                                <p className="text-sm text-gray-500 mt-1">
+                                                    {new Date(activity.timestamp).toLocaleString()} 
+                                                    {activity.distributor && ` • ${activity.distributor.ownerName}`}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    );
+                                })
+                            ) : (
+                                <div className="text-center py-8 text-gray-500">
+                                    <History className="h-12 w-12 mx-auto mb-2 text-gray-300" />
+                                    <p>No recent activity</p>
                                 </div>
-                                <div>
-                                    <h4 className="font-medium text-gray-900">New order received</h4>
-                                    <p className="text-gray-600">Order #35782 from Memorial Hospital</p>
-                                    <p className="text-sm text-gray-500 mt-1">10 minutes ago</p>
-                                </div>
-                            </div>
-
-                            <div className="flex items-start gap-4 p-3 rounded-xl hover:bg-green-50/40 transition-colors">
-                                <div className="flex-shrink-0">
-                                    <div className="p-3 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl shadow-sm">
-                                        <DollarSign className="h-5 w-5 text-white" />
-                                    </div>
-                                </div>
-                                <div>
-                                    <h4 className="font-medium text-gray-900">Payment received</h4>
-                                    <p className="text-gray-600">Payment of $12,580 received from City Medical</p>
-                                    <p className="text-sm text-gray-500 mt-1">45 minutes ago</p>
-                                </div>
-                            </div>
-
-                            <div className="flex items-start gap-4 p-3 rounded-xl hover:bg-purple-50/40 transition-colors">
-                                <div className="flex-shrink-0">
-                                    <div className="p-3 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-xl shadow-sm">
-                                        <Package className="h-5 w-5 text-white" />
-                                    </div>
-                                </div>
-                                <div>
-                                    <h4 className="font-medium text-gray-900">Inventory updated</h4>
-                                    <p className="text-gray-600">15 items added to Surgical Instruments</p>
-                                    <p className="text-sm text-gray-500 mt-1">2 hours ago</p>
-                                </div>
-                            </div>
-
-                            <div className="flex items-start gap-4 p-3 rounded-xl hover:bg-orange-50/40 transition-colors">
-                                <div className="flex-shrink-0">
-                                    <div className="p-3 bg-gradient-to-br from-orange-500 to-amber-600 rounded-xl shadow-sm">
-                                        <UserPlus className="h-5 w-5 text-white" />
-                                    </div>
-                                </div>
-                                <div>
-                                    <h4 className="font-medium text-gray-900">New distributor application</h4>
-                                    <p className="text-gray-600">MediEquip Inc. submitted an application</p>
-                                    <p className="text-sm text-gray-500 mt-1">4 hours ago</p>
-                                </div>
-                            </div>
-
-                            <div className="flex items-start gap-4 p-3 rounded-xl hover:bg-green-50/40 transition-colors">
-                                <div className="flex-shrink-0">
-                                    <div className="p-3 bg-gradient-to-br from-green-500 to-teal-600 rounded-xl shadow-sm">
-                                        <CheckCircle className="h-5 w-5 text-white" />
-                                    </div>
-                                </div>
-                                <div>
-                                    <h4 className="font-medium text-gray-900">Quotation approved</h4>
-                                    <p className="text-gray-600">Quotation #QT-234 was approved</p>
-                                    <p className="text-sm text-gray-500 mt-1">Yesterday</p>
-                                </div>
-                            </div>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -687,29 +659,40 @@ const AdminDashboard = () => {
                 </div>
                 <div className="p-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {recentActivity.map((activity, index) => (
-                            <div key={index} className="flex items-start gap-4 p-4 rounded-xl border border-gray-100 bg-gradient-to-r from-white to-gray-50 hover:shadow-md transition-all">
-                                <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-sm font-medium shadow-sm ${index % 4 === 0 ? 'bg-gradient-to-br from-blue-400 to-indigo-600 text-white' :
-                                    index % 4 === 1 ? 'bg-gradient-to-br from-green-400 to-teal-600 text-white' :
+                        {recentActivity.length > 0 ? (
+                            recentActivity.map((activity, index) => (
+                                <div key={activity.id} className="flex items-start gap-4 p-4 rounded-xl border border-gray-100 bg-gradient-to-r from-white to-gray-50 hover:shadow-md transition-all">
+                                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-sm font-medium shadow-sm ${
+                                        index % 4 === 0 ? 'bg-gradient-to-br from-blue-400 to-indigo-600 text-white' :
+                                        index % 4 === 1 ? 'bg-gradient-to-br from-green-400 to-teal-600 text-white' :
                                         index % 4 === 2 ? 'bg-gradient-to-br from-purple-400 to-pink-600 text-white' :
-                                            'bg-gradient-to-br from-orange-400 to-amber-600 text-white'
+                                        'bg-gradient-to-br from-orange-400 to-amber-600 text-white'
                                     }`}>
-                                    {activity.avatar}
+                                        {activity.distributor?.ownerName?.charAt(0).toUpperCase() || 'A'}
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                        <p className="font-medium text-gray-900">
+                                            <span className="font-bold">{activity.distributor?.ownerName || 'Admin'}</span> {activity.action}
+                                        </p>
+                                        <p className="text-sm text-gray-600 mt-1 line-clamp-2">
+                                            {activity.details?.description || 'Activity performed'}
+                                        </p>
+                                        <p className="text-sm text-gray-500 mt-1.5 flex items-center">
+                                            <Clock className="h-3.5 w-3.5 mr-1.5" />
+                                            {new Date(activity.timestamp).toLocaleString()}
+                                        </p>
+                                    </div>
+                                    <div className="flex-shrink-0">
+                                        <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                                    </div>
                                 </div>
-                                <div className="flex-1 min-w-0">
-                                    <p className="font-medium text-gray-900">
-                                        <span className="font-bold">{activity.user}</span> {activity.action}
-                                    </p>
-                                    <p className="text-sm text-gray-600 mt-1.5 flex items-center">
-                                        <Clock className="h-3.5 w-3.5 mr-1.5" />
-                                        {activity.time}
-                                    </p>
-                                </div>
-                                <div className="flex-shrink-0">
-                                    <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-                                </div>
+                            ))
+                        ) : (
+                            <div className="col-span-full text-center py-8 text-gray-500">
+                                <History className="h-12 w-12 mx-auto mb-2 text-gray-300" />
+                                <p>No recent activity to display</p>
                             </div>
-                        ))}
+                        )}
                     </div>
                 </div>
             </div>
