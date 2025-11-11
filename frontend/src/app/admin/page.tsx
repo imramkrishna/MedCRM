@@ -85,6 +85,9 @@ const AdminDashboard = () => {
     const [distributors, setDistributors] = useState<DistributorApplication[]>([]);
     const [selectedDistributor, setSelectedDistributor] = useState<DistributorApplication | null>(null);
     const [isDistributorLoading, setIsDistributorLoading] = useState(false);
+    
+    // Recent activity state - MUST be defined before early returns
+    const [recentActivity, setRecentActivity] = useState<ActivityLogType[]>([]);
 
 
 
@@ -227,8 +230,6 @@ const AdminDashboard = () => {
             chartColor: 'text-rose-200'
         }
     ];
-
-    const [recentActivity,setRecentActivity] = useState<ActivityLogType[]>([]);
 
     const upcomingRestock = [
         { product: 'Waterproof Arctic Boots', days: '30 days', status: 'pending' },

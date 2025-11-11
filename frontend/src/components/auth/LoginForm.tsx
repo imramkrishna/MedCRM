@@ -16,6 +16,13 @@ interface LoginFormProps {
 
 const LoginForm = ({ type, title, subtitle }: LoginFormProps) => {
     const { showLoginSuccess, showLoginError } = useCommonToasts();
+    
+    // Default credentials based on user type
+    const defaultCredentials = {
+        admin: { email: 'admin@email.com', password: 'admin' },
+        distributor: { email: 'tony@email.com', password: 'admin' }
+    };
+    
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
@@ -24,6 +31,12 @@ const LoginForm = ({ type, title, subtitle }: LoginFormProps) => {
 
     const dispatch = useAppDispatch();
     const router = useRouter();
+    
+    // Quick login with default credentials
+    const handleQuickLogin = () => {
+        setEmail(defaultCredentials[type].email);
+        setPassword(defaultCredentials[type].password);
+    };
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsLoading(true);
@@ -183,6 +196,29 @@ const LoginForm = ({ type, title, subtitle }: LoginFormProps) => {
                             >
                                 {isLoading ? 'Signing in...' : 'Sign in'}
                             </button>
+                        </div>
+
+                        {/* Quick Login Button for Recruiters/Demo */}
+                        <div className="relative">
+                            <div className="absolute inset-0 flex items-center">
+                                <div className="w-full border-t border-gray-300" />
+                            </div>
+                            <div className="relative flex justify-center text-sm">
+                                <span className="px-2 bg-white text-gray-500">For Demo/Testing</span>
+                            </div>
+                        </div>
+
+                        <div>
+                            <button
+                                type="button"
+                                onClick={handleQuickLogin}
+                                className="group relative w-full flex justify-center py-2 px-4 border-2 border-blue-300 text-sm font-medium rounded-md text-blue-600 bg-blue-50 hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all"
+                            >
+                                🚀 Quick Login as {type === 'admin' ? 'Admin' : 'Distributor'}
+                            </button>
+                            <p className="mt-2 text-center text-xs text-gray-500">
+                                Credentials: <span className="font-mono font-semibold">{defaultCredentials[type].email}</span> / <span className="font-mono font-semibold">{defaultCredentials[type].password}</span>
+                            </p>
                         </div>
 
                         {type === 'distributor' && (
