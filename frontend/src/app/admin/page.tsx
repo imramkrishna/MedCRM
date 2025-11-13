@@ -165,23 +165,8 @@ const AdminDashboard = () => {
         { id: 'orders', label: 'Orders', icon: ShoppingCart },
         { id: 'manual-request', label: 'Manual Request', icon: FileText },
         { id: 'inventory', label: 'Inventory', icon: Package },
-        { id: 'purchases', label: 'Purchases', icon: ShoppingBag },
-        { id: 'quotation', label: 'Quotation', icon: Receipt },
-        {
-            id: 'returns',
-            label: 'Returns',
-            icon: RotateCcw,
-            submenu: [
-                { id: 'stock-return', label: 'Stock Return' },
-                { id: 'supplier-return', label: 'Supplier Return' },
-                { id: 'wastage-return', label: 'Wastage Return' }
-            ]
-        },
-        { id: 'transactions', label: 'Transaction History', icon: RefreshCw },
-        { id: 'payments', label: 'Payment Management', icon: CreditCard },
         { id: 'verify-distributor', label: 'Verify Distributor', icon: UserCheck },
         { id: 'settings', label: 'Settings', icon: Settings },
-        { id: 'reports', label: 'Reports', icon: FileBarChart }
     ];
 
     const stats = [
@@ -716,14 +701,14 @@ const AdminDashboard = () => {
                 return <Inventory />;
             case 'purchases':
                 return <Purchases />;
-            case 'quotation':
-                return <Quotations />;
-            case 'transactions':
-                return <Transactions />;
-            case 'payments':
-                return <Payments />;
-            case 'reports':
-                return <Reports />;
+            // case 'quotation':
+            //     return <Quotations />;
+            // case 'transactions':
+            //     return <Transactions />;
+            // case 'payments':
+            //     return <Payments />;
+            // case 'reports':
+            //     return <Reports />;
             case 'verify-distributor':
                 return <VerifyDistributor />;
             default:
