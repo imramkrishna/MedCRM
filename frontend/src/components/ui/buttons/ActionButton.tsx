@@ -23,32 +23,32 @@ const ActionButton: React.FC<ActionButtonProps> = ({
     const getVariantClasses = () => {
         switch (variant) {
             case 'view':
-                return 'text-green-600 hover:text-blue-900 hover:bg-blue-50 border-blue-200';
+                return 'text-green-600 bg-green-50 border-green-200 hover:bg-green-100 hover:border-green-300';
             case 'edit':
-                return 'text-purple-600 hover:text-indigo-900 hover:bg-indigo-50 border-indigo-200';
+                return 'text-purple-600 bg-purple-50 border-purple-200 hover:bg-purple-100 hover:border-purple-300';
             case 'delete':
-                return 'text-red-600 hover:text-red-900 hover:bg-red-50 border-red-200';
+                return 'text-red-600 bg-red-50 border-red-200 hover:bg-red-100 hover:border-red-300';
             case 'add':
-                return 'text-green-600 hover:text-green-900 hover:bg-green-50 border-green-200';
+                return 'text-green-600 bg-emerald-50 border-emerald-200 hover:bg-emerald-100 hover:border-emerald-300';
             case 'primary':
-                return 'text-blue-600 hover:text-blue-900 hover:bg-blue-50 border-blue-200';
+                return 'text-blue-600 bg-blue-50 border-blue-200 hover:bg-blue-100 hover:border-blue-300';
             case 'secondary':
-                return 'text-gray-600 hover:text-gray-900 hover:bg-gray-50 border-gray-200';
+                return 'text-gray-600 bg-gray-50 border-gray-200 hover:bg-gray-100 hover:border-gray-300';
             default:
-                return 'text-blue-600 hover:text-blue-900 hover:bg-blue-50 border-blue-200';
+                return 'text-blue-600 bg-blue-50 border-blue-200 hover:bg-blue-100 hover:border-blue-300';
         }
     };
 
     const getSizeClasses = () => {
         switch (size) {
             case 'sm':
-                return 'p-1';
+                return 'h-8 w-8';
             case 'md':
-                return 'p-2';
+                return 'h-9 w-9';
             case 'lg':
-                return 'p-3';
+                return 'h-10 w-10';
             default:
-                return 'p-2';
+                return 'h-9 w-9';
         }
     };
 
@@ -72,9 +72,10 @@ const ActionButton: React.FC<ActionButtonProps> = ({
             className={`
                 ${getVariantClasses()}
                 ${getSizeClasses()}
-                border rounded transition-colors
+                inline-flex items-center justify-center
+                border rounded-lg transition-colors duration-200
                 disabled:opacity-50 disabled:cursor-not-allowed
-                relative
+                relative shrink-0
             `}
             title={title}
         >
