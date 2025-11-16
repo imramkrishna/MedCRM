@@ -636,8 +636,13 @@ const Orders = () => {
 
             {/* View Order Modal */}
             {showViewModal && selectedOrder && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none">
-                    <div className="bg-white rounded-2xl shadow-2xl border border-gray-200 w-full max-w-4xl mx-4 pointer-events-auto">
+                <>
+                    {/* Backdrop */}
+                    <div className="fixed inset-0 z-[1100] bg-black/50 backdrop-blur-sm" onClick={closeModal}></div>
+                    
+                    {/* Modal */}
+                    <div className="fixed inset-0 z-[1200] flex items-center justify-center p-4 pointer-events-none">
+                        <div className="bg-white rounded-2xl shadow-2xl border border-gray-200 w-full max-w-4xl pointer-events-auto">
                         {/* Header */}
                         <div className="bg-gradient-to-r from-purple-600 to-purple-700 px-6 py-4 rounded-t-2xl flex items-center justify-between">
                             <div className="flex items-center space-x-3">
@@ -838,13 +843,19 @@ const Orders = () => {
                             </button>
                         </div>
                     </div>
-                </div>
+                    </div>
+                </>
             )}
 
             {/* Edit Order Modal */}
             {showEditModal && selectedOrder && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none">
-                    <div className="bg-white rounded-2xl shadow-2xl border border-gray-200 w-full max-w-2xl mx-4 pointer-events-auto">
+                <>
+                    {/* Backdrop */}
+                    <div className="fixed inset-0 z-[1100] bg-black/50 backdrop-blur-sm" onClick={closeModal}></div>
+                    
+                    {/* Modal */}
+                    <div className="fixed inset-0 z-[1200] flex items-center justify-center p-4 pointer-events-none">
+                        <div className="bg-white rounded-2xl shadow-2xl border border-gray-200 w-full max-w-2xl pointer-events-auto">
                         {/* Header */}
                         <div className="bg-gradient-to-r from-purple-600 to-purple-700 px-6 py-4 rounded-t-2xl flex items-center justify-between">
                             <div className="flex items-center space-x-3">
@@ -974,7 +985,8 @@ const Orders = () => {
                             </button>
                         </div>
                     </div>
-                </div>
+                    </div>
+                </>
             )}
         </div>
     );
