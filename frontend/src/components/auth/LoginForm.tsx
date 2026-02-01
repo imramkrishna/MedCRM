@@ -20,7 +20,7 @@ const LoginForm = ({ type, title, subtitle }: LoginFormProps) => {
     // Default credentials based on user type
     const defaultCredentials = {
         admin: { email: 'admin@email.com', password: 'admin' },
-        distributor: { email: 'tony@email.com', password: 'admin' }
+        distributor: { email: 'thor@email.com', password: 'admin' }
     };
     
     const [email, setEmail] = useState('');
